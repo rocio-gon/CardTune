@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function DeckCreator() {
   const [deckName, setDeckName] = useState("");
   const [text, setText] = useState("");
-  const [savedDeckId, setSavedDeckId] = useState(null);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   function createDeck() {
     const newCards = text
@@ -41,18 +42,9 @@ function DeckCreator() {
       JSON.stringify(savedDecks)
     );
 
-    setSavedDeckId(newDeck.id);
-    setMessage(`Saved ${newDeck.name} with ${newCards.length} cards.`);
-  }
+    setMessage(`Saved ${newDeck.name} successfully!`);
 
-  function presentDeck() {
-    if (!savedDeckId) return;
-
-    window.open(
-      `/present?id=${encodeURIComponent(savedDeckId)}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    navigate("/decks");
   }
 
   return (
@@ -75,7 +67,6 @@ function DeckCreator() {
         value={text}
         onChange={(event) => {
           setText(event.target.value);
-          setSavedDeckId(null);
           setMessage("");
         }}
         placeholder={"sh\nch\nship\nshop"}
@@ -86,17 +77,10 @@ function DeckCreator() {
         Save deck
       </button>
 
-      {savedDeckId && (
-        <button className="present-button" onClick={presentDeck}>
-          Present cards ↗
-        </button>
-      )}
-
       {message && <p className="deck-message">{message}</p>}
     </section>
   );
 }
 
 export default DeckCreator;
-
 
